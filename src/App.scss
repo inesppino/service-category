@@ -1,0 +1,14 @@
+.card-container {
+  padding: 1.25rem;
+}
+
+.card-title-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-lists-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+}

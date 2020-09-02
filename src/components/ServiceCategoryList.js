@@ -3,14 +3,16 @@ import React, { Component } from "react";
 class ServiceCategoryList extends Component {
 
   render() {
-    const { categories } = this.props;
-
+    const { list, titleList } = this.props;
     return (
+      <div>
+        <h3>{titleList}</h3>
       <ul>
-        {categories['firstList'].map(category => {
-          return (<li>{category.Caption}</li>)
+        {list.map(category => {
+          return (<li key={category.Id}>{category.Caption}</li>)
         })}
       </ul>
+      </div>
     )
   }
 }

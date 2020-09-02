@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import './App.css';
+import './App.scss';
 import { fetchServiceCategory } from './services/serviceCategoryService';
-import ServiceCategoryList from './components/ServiceCategoryList';
+import ServiceCategoryCard from './components/ServiceCategoryCard';
 
 class App extends Component {
   constructor(props) {
@@ -14,17 +14,13 @@ class App extends Component {
     this.filterData = this.filterData.bind(this);
   }
 
-  componentDidMount(){
-
-  }
-
   fetchCategories() {
     const serviceCategory = {};
     fetchServiceCategory.value.map(category => {
-      if (!serviceCategory[category.ServiceCategory.Caption]) {
-        return serviceCategory[category.ServiceCategory.Caption] = [];
+      if (!serviceCategory[category.ServiceCategory.Id]) {
+        return serviceCategory[category.ServiceCategory.Id] = [];
       }
-       return serviceCategory[category.ServiceCategory.Caption].push(category);
+       return serviceCategory[category.ServiceCategory.Id].push(category);
     });
     // this.setState({
     //   havelist: true,
@@ -34,21 +30,19 @@ class App extends Component {
   }
 
   filterData(categories){
-    const firstList = [];
-    const secondList = [];
-    console.log(categories)
-    categories.map(cat => cat.Free ? firstList.push(cat) : secondList.push(cat));
-    return {firstList, secondList};
+    const Free = [];
+    const Extra = [];
+    categories.map(cat => cat.Free ? Free.push(cat) : Extra.push(cat));
+    return {Free, Extra};
   }
 
   render() {
     const categories = this.fetchCategories();
-    const prueba = this.filterData(categories['Internet'])
     return (
       <React.Fragment>
-        {/* <button onClick={this.fetchCategories}> {this.state.haveList} </button> */}
-        <ServiceCategoryList categories = {this.filterData(categories['Internet'])}/>
-
+        <ServiceCategoryCard lists={this.filterData(categories['2'])} title='Internet'/>
+        <ServiceCategoryCard lists={this.filterData(categories['3'])} title='Services'/>
+        <ServiceCategoryCard lists={this.filterData(categories['5'])} title='Services Sport'/>
       </React.Fragment>
     )
   }

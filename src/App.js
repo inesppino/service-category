@@ -8,11 +8,8 @@ class App extends Component {
     super(props);
     this.state = {
       servicesCategories: {},
-      haveLists: false,
       collapsibles: {},
     }
-    this.fetchCategories = this.fetchCategories.bind(this);
-    this.filterData = this.filterData.bind(this);
     this.handleCollapsible = this.handleCollapsible.bind(this);
   }
 
@@ -30,7 +27,6 @@ class App extends Component {
     });
     this.setState({
       servicesCategories: { ...serviceCategory },
-      haveLists: true
     }, this.createCollapsiblesHandlers
     );
     return serviceCategory;

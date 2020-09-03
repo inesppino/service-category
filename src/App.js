@@ -7,11 +7,17 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      haveList: false,
-      servicesCategories: {}
+      servicesCategories: {},
+      collapsibles: {}
     }
     this.fetchCategories = this.fetchCategories.bind(this);
     this.filterData = this.filterData.bind(this);
+    this.handleCollapsible = this.handleCollapsible.bind(this);
+  }
+
+  componentDidMount() {
+    this.fetchCategories();
+    this.createCollapsiblesHandelers();
   }
 
   fetchCategories() {
@@ -20,30 +26,45 @@ class App extends Component {
       if (!serviceCategory[category.ServiceCategory.Id]) {
         return serviceCategory[category.ServiceCategory.Id] = [];
       }
-       return serviceCategory[category.ServiceCategory.Id].push(category);
+      return serviceCategory[category.ServiceCategory.Id].push(category);
     });
-    // this.setState({
-    //   havelist: true,
-    //   servicesCategories: {...serviceCategory}
-    // })
+    this.setState({
+      servicesCategories: { ...serviceCategory }
+    })
     return serviceCategory
   }
 
-  filterData(categories){
+  createCollapsiblesHandelers() {
+    console.log('he pasado')
+    console.log(this.state.servicesCategories)
+    // necesito el this.state.servicesCategories para crear el objeto de collapsibles
+  }
+
+  filterData(categories) {
     const Free = [];
     const Extra = [];
-    categories.map(cat => cat.Free ? Free.push(cat) : Extra.push(cat));
-    return {Free, Extra};
+    categories.map(cat => cat.Free ? Free.push(cat) : Extra.push(cat));
+    return { Free, Extra };
+  }
+
+  handleCollapsible(e) {
+    console.log(e);
   }
 
   render() {
-    const categories = this.fetchCategories();
+    const { servicesCategories } = this.state;
     return (
-      <React.Fragment>
-        <ServiceCategoryCard lists={this.filterData(categories['2'])} title='Internet'/>
-        <ServiceCategoryCard lists={this.filterData(categories['3'])} title='Services'/>
-        <ServiceCategoryCard lists={this.filterData(categories['5'])} title='Services Sport'/>
-      </React.Fragment>
+      <ul>
+        {Object.keys(servicesCategories).map(category => {
+          return (
+            <ServiceCategoryCard key={servicesCategories[category][0].Id}
+              id={servicesCategories[category][0].Id}
+              lists={this.filterData(servicesCategories[category])}
+              title={servicesCategories[category][0].ServiceCategory.Caption} 
+              handleCollapsible={this.handleCollapsible}
+            />)
+        })}
+      </ul>
     )
   }
 }

@@ -4,12 +4,13 @@ import ServiceCategoryList from './ServiceCategoryList';
 class ServiceCategoryCard extends Component {
 
   render() {
-    const { lists, title, handleCollapsible, id } = this.props;
+    const { lists, title, handleCollapsible, id, collapsibleControl } = this.props;
+
     return (
-      <div className="card-container">
+      <div className={`card-container ${collapsibleControl}`}>
         <div className="card-title-container">
-        <h2>{title}</h2>
-        <button onClick={() => handleCollapsible(id)}>V</button>
+          <h2>{title}</h2>
+          <button onClick={() => handleCollapsible(id)}><i className="fas fa-angle-up icon-up"></i></button>
         </div>
         <div className="card-lists-container" id={title}>
           {Object.keys(lists).map((list) => {

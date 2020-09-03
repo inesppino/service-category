@@ -8,7 +8,8 @@ class App extends Component {
     super(props);
     this.state = {
       servicesCategories: {},
-      collapsibles: {}
+      haveLists: false,
+      collapsibles: {},
     }
     this.fetchCategories = this.fetchCategories.bind(this);
     this.filterData = this.filterData.bind(this);
@@ -17,7 +18,6 @@ class App extends Component {
 
   componentDidMount() {
     this.fetchCategories();
-    this.createCollapsiblesHandelers();
   }
 
   fetchCategories() {
@@ -29,15 +29,23 @@ class App extends Component {
       return serviceCategory[category.ServiceCategory.Id].push(category);
     });
     this.setState({
-      servicesCategories: { ...serviceCategory }
-    })
-    return serviceCategory
+      servicesCategories: { ...serviceCategory },
+      haveLists: true
+    }, this.createCollapsiblesHandlers
+    );
+    return serviceCategory;
   }
 
-  createCollapsiblesHandelers() {
-    console.log('he pasado')
-    console.log(this.state.servicesCategories)
-    // necesito el this.state.servicesCategories para crear el objeto de collapsibles
+  createCollapsiblesHandlers() {
+    const { servicesCategories } = this.state;
+    const collapsibles = {};
+    Object.keys(servicesCategories).forEach((category, index) => {
+      index === 0 ? collapsibles[category] = '' : collapsibles[category] = 'inactive-collapsible';
+    })
+    this.setState({
+      collapsibles
+    })
+    return collapsibles;
   }
 
   filterData(categories) {
@@ -47,21 +55,26 @@ class App extends Component {
     return { Free, Extra };
   }
 
-  handleCollapsible(e) {
-    console.log(e);
+  handleCollapsible(id) {
+    const collapsibles = {...this.state.collapsibles};
+    collapsibles[id] === '' ? collapsibles[id] = 'inactive-collapsible' : collapsibles[id] = '';
+    this.setState({
+      collapsibles
+    })
   }
 
   render() {
-    const { servicesCategories } = this.state;
+    const { servicesCategories, collapsibles } = this.state;
     return (
-      <ul>
+      <ul className="service-category-main-list">
         {Object.keys(servicesCategories).map(category => {
           return (
-            <ServiceCategoryCard key={servicesCategories[category][0].Id}
-              id={servicesCategories[category][0].Id}
+            <ServiceCategoryCard key={category}
+              id={category}
               lists={this.filterData(servicesCategories[category])}
               title={servicesCategories[category][0].ServiceCategory.Caption} 
               handleCollapsible={this.handleCollapsible}
+              collapsibleControl={collapsibles[category]}
             />)
         })}
       </ul>

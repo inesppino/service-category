@@ -19,16 +19,18 @@ class App extends Component {
 
   fetchCategories() {
     const serviceCategory = {};
-    fetchServiceCategory.value.map(category => {
-      if (!serviceCategory[category.ServiceCategory.Id]) {
-        return serviceCategory[category.ServiceCategory.Id] = [];
-      }
-      return serviceCategory[category.ServiceCategory.Id].push(category);
+    fetchServiceCategory().then(data => {
+      data.value.map(category => {
+        if (!serviceCategory[category.ServiceCategory.Id]) {
+          return serviceCategory[category.ServiceCategory.Id] = [];
+        }
+        return serviceCategory[category.ServiceCategory.Id].push(category);
+      });
+      this.setState({
+        servicesCategories: { ...serviceCategory },
+      }, this.createCollapsiblesHandlers
+      );
     });
-    this.setState({
-      servicesCategories: { ...serviceCategory },
-    }, this.createCollapsiblesHandlers
-    );
     return serviceCategory;
   }
 
@@ -52,7 +54,7 @@ class App extends Component {
   }
 
   handleCollapsible(id) {
-    const collapsibles = {...this.state.collapsibles};
+    const collapsibles = { ...this.state.collapsibles };
     collapsibles[id] === '' ? collapsibles[id] = 'inactive-collapsible' : collapsibles[id] = '';
     this.setState({
       collapsibles
@@ -68,7 +70,7 @@ class App extends Component {
             <ServiceCategoryCard key={category}
               id={category}
               lists={this.filterData(servicesCategories[category])}
-              title={servicesCategories[category][0].ServiceCategory.Caption} 
+              title={servicesCategories[category][0].ServiceCategory.Caption}
               handleCollapsible={this.handleCollapsible}
               collapsibleControl={collapsibles[category]}
             />)

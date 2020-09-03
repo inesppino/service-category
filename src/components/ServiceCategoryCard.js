@@ -4,14 +4,14 @@ import ServiceCategoryList from './ServiceCategoryList';
 class ServiceCategoryCard extends Component {
 
   render() {
-    const { lists, title } = this.props;
+    const { lists, title, handleCollapsible, id } = this.props;
     return (
       <div className="card-container">
         <div className="card-title-container">
         <h2>{title}</h2>
-        <button>Flecha</button>
+        <button onClick={() => handleCollapsible(id)}>V</button>
         </div>
-        <div className="card-lists-container">
+        <div className="card-lists-container" id={title}>
           {Object.keys(lists).map((list) => {
             return (
               <ServiceCategoryList key={list} titleList={list} list={lists[list]} />

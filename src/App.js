@@ -1,83 +1,73 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.scss';
-import { fetchServiceCategory } from './services/serviceCategoryService';
+import { ENDPOINTSERVICES } from './services/serviceCategoryService';
+import { useHttp } from './hooks/http';
+
 import ServiceCategoryCard from './components/ServiceCategoryCard';
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      servicesCategories: {},
-      collapsibles: {},
-    }
-    this.handleCollapsible = this.handleCollapsible.bind(this);
-  }
+const App = props => {
+  const [fetchedData, isLoading] = useHttp(ENDPOINTSERVICES, []);
+  const [collapsibles, setCollapsibles] = useState(null);
+  const [servicesCategories, setServicesCategories] = useState(null)
 
-  componentDidMount() {
-    this.fetchCategories();
-  }
-
-  fetchCategories() {
-    const serviceCategory = {};
-    fetchServiceCategory().then(data => {
-      data.value.map(category => {
-        if (!serviceCategory[category.ServiceCategory.Id]) {
-          return serviceCategory[category.ServiceCategory.Id] = [];
-        }
-        return serviceCategory[category.ServiceCategory.Id].push(category);
-      });
-      this.setState({
-        servicesCategories: { ...serviceCategory },
-      }, this.createCollapsiblesHandlers
-      );
+  let content = <p>Loading...</p>
+  
+  const arrangedData = () => {
+    const arrangedObject = {};
+    fetchedData.value.map(category => {
+      if (!arrangedObject[category.ServiceCategory.Id]) {
+        return arrangedObject[category.ServiceCategory.Id] = [];
+      }
+      return arrangedObject[category.ServiceCategory.Id].push(category);
     });
-    return serviceCategory;
+    setServicesCategories(arrangedObject);
   }
 
-  createCollapsiblesHandlers() {
-    const { servicesCategories } = this.state;
-    const collapsibles = {};
+  const createCollapsiblesHandlers = () => {
+    const newCollapsibles = {};
     Object.keys(servicesCategories).forEach((category, index) => {
-      index === 0 ? collapsibles[category] = '' : collapsibles[category] = 'inactive-collapsible';
+      index === 0 ? newCollapsibles[category] = '' : newCollapsibles[category] = 'inactive-collapsible';
     })
-    this.setState({
-      collapsibles
-    })
-    return collapsibles;
+    setCollapsibles(newCollapsibles);
   }
 
-  filterData(categories) {
+  const filterData = (categories) => {
     const Free = [];
     const Extra = [];
     categories.map(cat => cat.Free ? Free.push(cat) : Extra.push(cat));
     return { Free, Extra };
   }
 
-  handleCollapsible(id) {
-    const collapsibles = { ...this.state.collapsibles };
+  const handleCollapsible = (id) => {
+    // const collapsibles = { ...this.state.collapsibles };
     collapsibles[id] === '' ? collapsibles[id] = 'inactive-collapsible' : collapsibles[id] = '';
-    this.setState({
-      collapsibles
-    })
+    setCollapsibles(collapsibles);
+    console.log(id)
+    console.log(collapsibles)
   }
 
-  render() {
-    const { servicesCategories, collapsibles } = this.state;
-    return (
-      <ul className="service-category-main-list">
-        {Object.keys(servicesCategories).map(category => {
-          return (
-            <ServiceCategoryCard key={category}
-              id={category}
-              lists={this.filterData(servicesCategories[category])}
-              title={servicesCategories[category][0].ServiceCategory.Caption}
-              handleCollapsible={this.handleCollapsible}
-              collapsibleControl={collapsibles[category]}
-            />)
-        })}
-      </ul>
-    )
+  if (!isLoading && fetchedData && !servicesCategories) {
+    arrangedData();
+  } else if(servicesCategories && !collapsibles) {
+    createCollapsiblesHandlers();
   }
+  else if (collapsibles) {
+    content =
+    <ul className="service-category-main-list">
+      {Object.keys(servicesCategories).map(category => {
+        return (
+          <ServiceCategoryCard key={category}
+            id={category}
+            lists={filterData(servicesCategories[category])}
+            title={servicesCategories[category][0].ServiceCategory.Caption}
+            handleCollapsible={handleCollapsible}
+            collapsibleControl={collapsibles[category]}
+          />
+          )
+      })}
+    </ul>;
+  }
+  return (content)
 }
 
 export default App;

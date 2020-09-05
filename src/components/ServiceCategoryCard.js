@@ -1,14 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import ServiceCategoryList from './ServiceCategoryList';
 
 const ServiceCategoryCard = props => {
-  const { lists, title, handleCollapsible, id, collapsibleControl } = props;
+  const { lists, title, collapsibleControl } = props;
+  const [isActive, setActive] = useState(collapsibleControl);
 
   return (
-    <div className={`card-container ${collapsibleControl}`}>
+    <div className={`card-container ${isActive ? '' : 'inactive-collapsible'}`}>
       <div className="card-title-container">
         <h2>{title}</h2>
-        <button onClick={() => handleCollapsible(id)}><i className="fas fa-angle-up icon-up"></i></button>
+        <button onClick={() => setActive(!isActive)}><i className="fas fa-angle-up icon-up"></i></button>
       </div>
       <div className="card-lists-container" id={title}>
         {Object.keys(lists).map((list) => {

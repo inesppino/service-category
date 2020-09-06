@@ -11,7 +11,7 @@ const ServiceCategoryCard = props => {
         <h2>{title}</h2>
         <button onClick={() => setActive(!isActive)}><i className="fas fa-angle-up icon-up"></i></button>
       </div>
-      <div className={`card-lists-container ${isActive ? '' : 'inactive-collapsible'}`} id={title}>
+      <div className="card-lists-container" id={title}>
         {Object.keys(lists).map((list) => {
           return (
             <ServiceCategoryList key={list} titleList={list} list={lists[list]} />

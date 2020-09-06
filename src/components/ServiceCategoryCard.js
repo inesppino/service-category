@@ -12,7 +12,7 @@ class ServiceCategoryCard extends Component {
           <h2>{title}</h2>
           <button onClick={() => handleCollapsible(id)}><i className="fas fa-angle-up icon-up"></i></button>
         </div>
-        <div className={`card-lists-container ${collapsibleControl}`} id={title}>
+        <div className="card-lists-container" id={title}>
           {Object.keys(lists).map((list) => {
             return (
               <ServiceCategoryList key={list} titleList={list} list={lists[list]} />

@@ -84,12 +84,6 @@ body {
   }
 }
 
-// .card-lists-container.inactive-collapsible {
-//   max-height: 0;
-//   opacity: 0.2;
-//   transition: all 0.6s ease-in-out;
-// }
-
 @media all and (max-width: 572px){
   .card-lists-container {
     grid-template-columns: 1fr;
